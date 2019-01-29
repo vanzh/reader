@@ -9,7 +9,7 @@ class HttpHelper {
 
   static HttpHelper _httpHelper;
 
-  static HttpHelper getInstatnce() {
+  static HttpHelper getInstance() {
     if (_httpHelper == null) {
       _httpHelper = HttpHelper();
     }

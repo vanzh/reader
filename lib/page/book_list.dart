@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:reader/net/http_helper.dart';
+import 'package:reader/page/book_detail.dart';
 
 var url =
     'http://api.zhuishushenqi.com/book/by-categories?gender=male&type=new&major=%E7%8E%84%E5%B9%BB&start=0&limit=50';
@@ -26,10 +27,16 @@ class _BookListPageState extends State<BookListPage> {
 
   void _loadData() async {
     var bookByCategory =
-        await HttpHelper.getInstatnce().getBookByCategory("", "");
+    await HttpHelper.getInstance().getBookByCategory("", "");
     setState(() {
       widgets = bookByCategory['books'];
     });
+  }
+
+  _gotoBookDetail(String bookId) {
+    print("need goto " + bookId);
+    Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => new BookDetailPage(bookId: bookId)));
   }
 
   @override
@@ -55,48 +62,53 @@ class _BookListPageState extends State<BookListPage> {
   }
 
   Widget getRow(int i) {
-    return Padding(
-//        padding: EdgeInsets.all(10.0), child: Text("${widgets[i]["title"]}"));
-        padding: EdgeInsets.all(10.0),
-        child: Row(
-          children: <Widget>[
-            Image.network(
-              HttpHelper.imgApi + widgets[i]['cover'],
-              width: 80,
-              height: 80,
-            ),
-            Expanded(child:  Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+    return new GestureDetector(
+        onTap: () {
+          _gotoBookDetail(widgets[i]['_id']);
+        },
+        child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Row(
               children: <Widget>[
-                Text(
-                  widgets[i]['title'],
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 16),
-                  softWrap: false,
+                Image.network(
+                  HttpHelper.imgApi + widgets[i]['cover'],
+                  width: 80,
+                  height: 80,
                 ),
-                Text(
-                  widgets[i]['author'] + "  |  " + category,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 14,color: Colors.black38),
-                ),
-                Text(
-                  widgets[i]['shortIntro'],
-                  softWrap: false,
-                  maxLines: 1,
-                  style: TextStyle(fontSize: 14,color: Colors.black38),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  widgets[i]['latelyFollower'].toString() +
-                      " 人在追 | " +
-                      widgets[i]['retentionRatio'].toString() +
-                      " %读者存留",
-                  style: TextStyle(fontSize: 14,color: Colors.black26),
-                  textAlign: TextAlign.left,
-                ),
+                Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          widgets[i]['title'],
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 16),
+                          softWrap: false,
+                        ),
+                        Text(
+                          widgets[i]['author'] + "  |  " + category,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 14, color: Colors.black38),
+                        ),
+                        Text(
+                          widgets[i]['shortIntro'],
+                          softWrap: false,
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 14, color: Colors.black38),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          widgets[i]['latelyFollower'].toString() +
+                              " 人在追 | " +
+                              widgets[i]['retentionRatio'].toString() +
+                              " %读者存留",
+                          style: TextStyle(fontSize: 14, color: Colors.black26),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    ))
               ],
-            ))
-          ],
-        ));
+            )));
   }
 }

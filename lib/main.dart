@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       ),
       home: MyHomePage(title: '书卷'),
       routes: <String, WidgetBuilder>{
-        RouterConst.BookByCategory: (context) => BookListPage(title: "玄幻")
+        RouterConst.bookByCategory: (context) => BookListPage(title: "玄幻")
       },
     );
   }
@@ -54,7 +54,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   void _goToCategory(){
-    Navigator.of(context).pushNamed(RouterConst.BookByCategory);
+    Navigator.of(context).pushNamed(RouterConst.bookByCategory);
   }
 
   @override
