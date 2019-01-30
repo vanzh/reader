@@ -27,7 +27,7 @@ class _BookListPageState extends State<BookListPage> {
 
   void _loadData() async {
     var bookByCategory =
-    await HttpHelper.getInstance().getBookByCategory("", "");
+        await HttpHelper.getInstance().getBookByCategory("", "");
     setState(() {
       widgets = bookByCategory['books'];
     });
@@ -35,8 +35,10 @@ class _BookListPageState extends State<BookListPage> {
 
   _gotoBookDetail(String bookId) {
     print("need goto " + bookId);
-    Navigator.push(context,
-        new MaterialPageRoute(builder: (context) => new BookDetailPage(bookId: bookId)));
+    Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) => new BookDetailPage(bookId)));
   }
 
   @override
@@ -62,7 +64,6 @@ class _BookListPageState extends State<BookListPage> {
   }
 
   Widget getRow(int i) {
-
     return new GestureDetector(
         onTap: () {
           _gotoBookDetail(widgets[i]['_id']);
@@ -78,36 +79,36 @@ class _BookListPageState extends State<BookListPage> {
                 ),
                 Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          widgets[i]['title'],
-                          textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 16),
-                          softWrap: false,
-                        ),
-                        Text(
-                          widgets[i]['author'] + "  |  " + category,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 14, color: Colors.black38),
-                        ),
-                        Text(
-                          widgets[i]['shortIntro'],
-                          softWrap: false,
-                          maxLines: 1,
-                          style: TextStyle(fontSize: 14, color: Colors.black38),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          widgets[i]['latelyFollower'].toString() +
-                              " 人在追 | " +
-                              widgets[i]['retentionRatio'].toString() +
-                              " %读者存留",
-                          style: TextStyle(fontSize: 14, color: Colors.black26),
-                          textAlign: TextAlign.left,
-                        ),
-                      ],
-                    ))
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      widgets[i]['title'],
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 16),
+                      softWrap: false,
+                    ),
+                    Text(
+                      widgets[i]['author'] + "  |  " + category,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 14, color: Colors.black38),
+                    ),
+                    Text(
+                      widgets[i]['shortIntro'],
+                      softWrap: false,
+                      maxLines: 1,
+                      style: TextStyle(fontSize: 14, color: Colors.black38),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      widgets[i]['latelyFollower'].toString() +
+                          " 人在追 | " +
+                          widgets[i]['retentionRatio'].toString() +
+                          " %读者存留",
+                      style: TextStyle(fontSize: 14, color: Colors.black26),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ))
               ],
             )));
   }

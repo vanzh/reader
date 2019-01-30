@@ -1,4 +1,1 @@
-
-class BookListModel{
-
-}
+class BookListModel {}
