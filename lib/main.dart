@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reader/page/book_list.dart';
 import 'package:reader/router_const.dart';
+import 'package:reader/util/page_view.dart';
 
 void main() => runApp(MyApp());
 
@@ -52,8 +53,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  void _goToCategory(){
+  void _goToCategory() {
     Navigator.of(context).pushNamed(RouterConst.bookByCategory);
   }
 
@@ -71,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _goToCategory,
         tooltip: 'Increment',

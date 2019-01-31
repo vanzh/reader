@@ -10,15 +10,10 @@ import 'package:reader/util/widget_util.dart';
 class BookDetailPage extends StatefulWidget {
   final String bookId;
 
-  String bookRecommendUrlById = "http://api.zhuishushenqi.com/book/";
-
   BookDetailPage(this.bookId);
 
   @override
   State<StatefulWidget> createState() {
-    print('BookDetialPage:' + bookId);
-    bookRecommendUrlById = bookRecommendUrlById + bookId + "/recommend";
-
     return new _BookDetailPage(bookId);
   }
 }

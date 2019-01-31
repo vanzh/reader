@@ -1,5 +1,4 @@
 class BookUpgrade {
-  String _id;
   String author;
   String allowMonthly;
   String referenceSource;
