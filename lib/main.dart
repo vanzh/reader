@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reader/page/book_list.dart';
 import 'package:reader/router_const.dart';
 import 'package:reader/util/page_view.dart';
+import 'package:reader/util/reader_slider_view.dart';
 
 void main() => runApp(MyApp());
 
@@ -53,6 +54,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  double init =0;
+  double moveDis =0;
   void _goToCategory() {
     Navigator.of(context).pushNamed(RouterConst.bookByCategory);
   }
@@ -71,7 +74,25 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
+      body: Container(
+        child:
+        GestureDetector(
+            onPanStart: (DragStartDetails details) {
+              init = details.globalPosition.dx;
+            },
+            onPanUpdate: (DragUpdateDetails details) {
 
+              setState(() {
+                moveDis = details.globalPosition.dx - init;
+                print("$moveDis");
+              });
+            },
+            onPanEnd: (DragEndDetails details) {
+              init = 0;
+            },
+            child:ReaderSliderView(this.moveDis),
+      )
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _goToCategory,
         tooltip: 'Increment',

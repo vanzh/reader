@@ -71,7 +71,7 @@ class ReaderPagePainter extends CustomPainter {
 
       ui.Paragraph paragraph = paragraphBuilder.build()
         ..layout(ui.ParagraphConstraints(width: this.size.width));
-      Offset offset2 = Offset(0, i * 32.0);
+      Offset offset2 = Offset(0, i * 26.0);
       canvas.drawParagraph(paragraph, offset2);
     }
   }

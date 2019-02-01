@@ -6,13 +6,14 @@ import 'package:reader/net/http_helper.dart';
 import 'package:reader/net/resp/chapter_context_resp.dart';
 import 'package:reader/net/resp/chapter_list_resp.dart';
 import 'package:reader/net/resp/toc_list_resp.dart';
+import 'package:reader/util/base_state.dart';
 import 'package:reader/util/page_view.dart';
-import 'package:reader/util/widget_util.dart';
+import 'package:reader/util/screen.dart';
 
 class BookReading extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _BookReading(bookId);
+    return new BookReadingState(bookId);
   }
 
   final String bookId;
@@ -20,19 +21,18 @@ class BookReading extends StatefulWidget {
   BookReading(this.bookId);
 }
 
-class _BookReading extends State<BookReading> {
-  bool init = false;
+class BookReadingState extends BaseState<BookReading> {
   ReadingSetting readingSetting;
   List<PageInfo> pages;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: init ? _buildView() : WidgetUtil.loadingView());
-  }
+  PageController pageController = PageController(keepPage: false);
+  PageInfo prePageInfo;
+  PageInfo curPageInfo;
+  PageInfo nextPageInfo;
+  int pageIndex = 0;
 
   final String bookId;
 
-  _BookReading(this.bookId) {
+  BookReadingState(this.bookId) {
     readingSetting = ReadingSetting(fortSize: 20, maxRow: 20, maxWord: 18);
     _loadData();
   }
@@ -58,11 +58,81 @@ class _BookReading extends State<BookReading> {
       _toPageInfos(cpContent);
       if (pages != null) init = true;
       print(init);
+      _getPages(pageIndex);
     });
   }
 
-  _buildView() {
-    return new ReaderPageView(pages[0]);
+  _getPages(int index) {
+    if (index < 0) {
+      print("已经是第一页了");
+      return;
+    }
+    if (index >= pages.length) {
+      print("已经是最后一页了");
+      return;
+    }
+
+    prePageInfo = index == 0 ? null : pages[index - 1];
+    curPageInfo = pages[index];
+    nextPageInfo = index == pages.length - 1 ? null : pages[index + 1];
+    this.pageIndex = index;
+    setState(() {});
+  }
+
+  @override
+  Widget buildView(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        buildReaderView(),
+      ],
+    );
+  }
+
+  Widget buildReaderView() {
+    int pageCount = pages.length;
+    return PageView.builder(
+      itemCount: pageCount,
+      physics: BouncingScrollPhysics(),
+      controller: pageController,
+      itemBuilder: buildPageView,
+      onPageChanged: onPageChanged,
+    );
+  }
+
+  Widget buildPageView(BuildContext context, int index) {
+    return GestureDetector(
+      onTapUp: (TapUpDetails details) {
+        onTap(details.globalPosition);
+      },
+      child: ReaderPageView(curPageInfo),
+    );
+  }
+
+  onTap(Offset position) {
+    double xRate = position.dx / Screen.width;
+    if (xRate > 0.33 && xRate < 0.66) {
+//      SystemChrome.setEnabledSystemUIOverlays(
+//          [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    } else if (xRate >= 0.66) {
+      nextPage();
+    } else {
+      previousPage();
+    }
+  }
+
+  nextPage() {
+    print("下一页");
+    _getPages(this.pageIndex + 1);
+  }
+
+  previousPage() {
+    print("前一页");
+    _getPages(this.pageIndex - 1);
+  }
+
+  void onPageChanged(int value) {
+    print("onPageChanged:$onPageChanged");
+    _getPages(value);
   }
 
   List<PageInfo> _toPageInfos(String content) {
@@ -79,13 +149,14 @@ class _BookReading extends State<BookReading> {
         int endCol;
         if (j == 0 && linesLength >= (j + 1) * maxWord - 2) {
           endCol = maxWord - 2;
-          lines.add("   " + prgrhs[i].substring(startCol, endCol));
+          lines.add("    " + prgrhs[i].substring(startCol, endCol));
         } else if (linesLength >= (j + 1) * maxWord) {
           endCol = (j + 1) * maxWord;
           lines.add(prgrhs[i].substring(startCol, endCol));
         } else {
           endCol = prgrhs[i].length;
-          lines.add(prgrhs[i].substring(startCol, endCol));
+          var strspan = j == 0 ? "    " : "";
+          lines.add(strspan + prgrhs[i].substring(startCol, endCol));
         }
         print("总计行 $i >> $linesLength ... start:$startCol  end:$endCol");
         j++;
