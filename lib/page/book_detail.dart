@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:reader/data_model/BookDetailModel.dart';
+import 'package:reader/data_model/book_detail_model.dart';
 import 'package:reader/net/http_helper.dart';
 import 'package:reader/net/resp/book_info_resp.dart';
 import 'package:reader/page/book_reading.dart';

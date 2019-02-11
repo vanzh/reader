@@ -33,7 +33,8 @@ class BookReadingState extends BaseState<BookReading> {
   final String bookId;
 
   BookReadingState(this.bookId) {
-    readingSetting = ReadingSetting(fortSize: 20, maxRow: 20, maxWord: 18);
+    readingSetting = ReadingSetting(fortSize: 20, maxRow: 20, maxWord: 17);
+
     _loadData();
   }
 
@@ -72,10 +73,9 @@ class BookReadingState extends BaseState<BookReading> {
       return;
     }
 
-    prePageInfo = index == 0 ? null : pages[index - 1];
+    prePageInfo = index == 0 ? null : curPageInfo;
     curPageInfo = pages[index];
     nextPageInfo = index == pages.length - 1 ? null : pages[index + 1];
-    this.pageIndex = index;
     setState(() {});
   }
 
@@ -89,9 +89,8 @@ class BookReadingState extends BaseState<BookReading> {
   }
 
   Widget buildReaderView() {
-    int pageCount = pages.length;
     return PageView.builder(
-      itemCount: pageCount,
+      itemCount: pages.length,
       physics: BouncingScrollPhysics(),
       controller: pageController,
       itemBuilder: buildPageView,
@@ -104,8 +103,16 @@ class BookReadingState extends BaseState<BookReading> {
       onTapUp: (TapUpDetails details) {
         onTap(details.globalPosition);
       },
-      child: ReaderPageView(curPageInfo),
+      child: _buildPageView(index),
     );
+  }
+
+  _buildPageView(int index) {
+    print("index = $index  pageIndex = " + this.pageIndex.toString());
+    if (index > this.pageIndex) {
+      nextPage();
+    }
+    return ReaderPageView(curPageInfo);
   }
 
   onTap(Offset position) {
@@ -118,21 +125,44 @@ class BookReadingState extends BaseState<BookReading> {
     } else {
       previousPage();
     }
+    setState(() {});
   }
+
+
 
   nextPage() {
     print("下一页");
-    _getPages(this.pageIndex + 1);
+    var index = this.pageIndex + 1;
+    if (index >= pages.length) {
+      print("已经是最后一页了");
+      return;
+    }
+
+    prePageInfo = curPageInfo;
+    curPageInfo = nextPageInfo;
+    nextPageInfo = index == pages.length - 1 ? null : pages[index + 1];
+
   }
 
   previousPage() {
     print("前一页");
-    _getPages(this.pageIndex - 1);
+    var index = this.pageIndex - 1;
+    if (index < 0) {
+      print("已经是第一页了");
+      return;
+    }
+    curPageInfo = prePageInfo;
+    nextPageInfo = curPageInfo;
+    prePageInfo = pages[index];
   }
 
   void onPageChanged(int value) {
-    print("onPageChanged:$onPageChanged");
-    _getPages(value);
+    this.pageIndex = value;
+//    if(value == 4){
+//      new Future.delayed(new Duration(microseconds: 800)).then((next){pageController.jumpToPage(1);});
+//    }else if(value == 0){
+//      new Future.delayed(new Duration(microseconds: 800)).then((next){pageController.jumpToPage(3);});
+//    }
   }
 
   List<PageInfo> _toPageInfos(String content) {
@@ -149,13 +179,13 @@ class BookReadingState extends BaseState<BookReading> {
         int endCol;
         if (j == 0 && linesLength >= (j + 1) * maxWord - 2) {
           endCol = maxWord - 2;
-          lines.add("    " + prgrhs[i].substring(startCol, endCol));
+          lines.add(" " + prgrhs[i].substring(startCol, endCol));
         } else if (linesLength >= (j + 1) * maxWord) {
           endCol = (j + 1) * maxWord;
           lines.add(prgrhs[i].substring(startCol, endCol));
         } else {
           endCol = prgrhs[i].length;
-          var strspan = j == 0 ? "    " : "";
+          var strspan = j == 0 ? " " : "";
           lines.add(strspan + prgrhs[i].substring(startCol, endCol));
         }
         print("总计行 $i >> $linesLength ... start:$startCol  end:$endCol");

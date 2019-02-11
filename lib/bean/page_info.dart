@@ -16,7 +16,7 @@ class ReadingProgress{
 class ReadingSetting{
   int fortSize;
   int maxRow =20;
-  int maxWord=18;
+  int maxWord=16;
   int color;
 
   ReadingSetting({this.fortSize, this.maxRow, this.maxWord, this.color});

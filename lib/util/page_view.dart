@@ -7,8 +7,8 @@ import 'package:reader/bean/page_info.dart';
 
 //阅读页面View
 class ReaderPageView extends StatefulWidget {
-  State<StatefulWidget> state;
-  PageInfo pageInfo;
+
+  final PageInfo pageInfo;
 
   @override
   State<StatefulWidget> createState() {
@@ -22,6 +22,7 @@ class ReaderPageViewState extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.fromLTRB(10, 25, 10, 10),
       child: CustomPaint(
         painter: ReaderPagePainter(context, this.pageInfo),
       ),
@@ -49,8 +50,6 @@ class ReaderPagePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (this.pageInfo == null) return;
-
-    List<ui.Paragraph> lines = [];
 
     for (int i = 0; i < pageInfo.lineTexts.length; i++) {
       print(pageInfo.lineTexts[i]);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reader/base/router_const.dart';
 import 'package:reader/page/book_list.dart';
-import 'package:reader/router_const.dart';
-import 'package:reader/util/page_view.dart';
 import 'package:reader/util/reader_slider_view.dart';
 
 void main() => runApp(MyApp());
